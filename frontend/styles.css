@@ -283,3 +283,22 @@ body {
     pointer-events: none;
 }
 
+#update-banner {
+    position: fixed;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    z-index: 11;
+    min-width: 16rem;
+    max-width: 80vw;
+    padding: 0.9rem 1.1rem;
+    border-radius: 0.9rem;
+    background: rgba(0, 0, 0, 0.88);
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: center;
+    box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.4);
+    border: 0.08rem solid rgba(255, 255, 255, 0.2);
+    pointer-events: none;
+}
+

@@ -9,6 +9,7 @@ cd "$REPO_DIR"
 
 git pull --ff-only
 SKIP_SYSTEM_SETUP=1 bash ./setup.sh
+echo "Rebooting Pi..."
 sudo -n reboot
 
 echo "Update complete!"

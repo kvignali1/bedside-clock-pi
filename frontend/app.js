@@ -86,29 +86,41 @@ function updateDisplay() {
 function updateSoftware() {
     const button = document.getElementById('update-button');
     const status = document.getElementById('update-status');
+    const banner = document.getElementById('update-banner');
 
     button.disabled = true;
     status.textContent = 'Updating...';
+    banner.hidden = false;
+    banner.textContent = 'Updating now. The Pi will reboot when it finishes.';
 
     fetch('/api/update', { method: 'POST' })
         .then(response => response.json())
         .then(data => {
             status.textContent = data.message || 'Update started.';
+            banner.textContent = data.message || 'Update started.';
             const poll = setInterval(() => {
                 fetch('/api/update/status')
                     .then(response => response.json())
                     .then(state => {
                         status.textContent = state.message || 'Idle';
                         if (state.log_tail) {
-                            status.textContent = `${state.message || 'Idle'} ${state.log_tail}`;
+                            const details = `${state.message || 'Idle'} ${state.log_tail}`;
+                            status.textContent = details;
+                            banner.textContent = details;
+                        } else {
+                            banner.textContent = state.message || 'Idle';
                         }
                         if (!state.running) {
                             button.disabled = false;
                             clearInterval(poll);
+                            if ((state.message || '').toLowerCase().includes('complete')) {
+                                banner.textContent = 'Update complete. Rebooting the Pi now.';
+                            }
                         }
                     })
                     .catch(() => {
                         status.textContent = 'Update status unavailable.';
+                        banner.textContent = 'Update status unavailable.';
                         button.disabled = false;
                         clearInterval(poll);
                     });
@@ -116,6 +128,7 @@ function updateSoftware() {
         })
         .catch(() => {
             status.textContent = 'Update failed to start.';
+            banner.textContent = 'Update failed to start.';
             button.disabled = false;
         });
 }
