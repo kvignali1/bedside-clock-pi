@@ -52,7 +52,7 @@ The frontend is served by the same Flask app, so there is only one service to ma
 
 If Chromium is installed and the Pi is set to auto-login into the desktop, the clock will open in kiosk mode after login.
 
-The clock UI also includes a lower-left update button that runs `update.sh` for you and reboots the Pi after updating.
+The clock UI also includes a lower-left update button that runs `update.sh` for you and reboots the Pi after updating. The setup script installs the narrow sudo permissions needed for that flow.
 
 ## Manual service commands
 
@@ -70,3 +70,4 @@ sudo systemctl enable bedside.service
 - If `python3 -m venv` fails, install `python3-venv` on the Pi and rerun the setup script.
 - If kiosk mode does not launch, make sure Chromium is installed and desktop auto-login is enabled on the Pi.
 - If the update button fails, you can still run `./update.sh` from SSH on the Pi.
+- If the update button says idle, make sure you have pulled the latest repo version and rerun `./setup.sh` so the sudo permissions are installed.

@@ -9,6 +9,6 @@ cd "$REPO_DIR"
 
 git pull --ff-only
 ./setup.sh
-sudo reboot
+sudo -n reboot
 
 echo "Update complete!"

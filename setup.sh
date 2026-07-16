@@ -5,11 +5,15 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 SERVICE_NAME="bedside.service"
 SERVICE_TARGET="/etc/systemd/system/$SERVICE_NAME"
+SUDOERS_TARGET="/etc/sudoers.d/bedside-clock"
 VENV_DIR="$REPO_DIR/.venv"
 SERVICE_USER="${SUDO_USER:-$USER}"
 AUTOSTART_DIR="/home/$SERVICE_USER/.config/autostart"
 KIOSK_DESKTOP_FILE="$AUTOSTART_DIR/bedside-kiosk.desktop"
 CHROMIUM_BIN=""
+SYSTEMCTL_BIN="$(command -v systemctl)"
+TEE_BIN="$(command -v tee)"
+REBOOT_BIN="$(command -v reboot)"
 
 if [ "$SERVICE_USER" = "root" ]; then
   SERVICE_USER="$(logname 2>/dev/null || echo pi)"
@@ -36,6 +40,15 @@ fi
 
 "$VENV_DIR/bin/python" -m pip install --upgrade pip setuptools wheel
 "$VENV_DIR/bin/pip" install --prefer-binary -r "$REPO_DIR/requirements.txt"
+
+sudo tee "$SUDOERS_TARGET" >/dev/null <<EOF
+$SERVICE_USER ALL=(root) NOPASSWD: $TEE_BIN $SERVICE_TARGET
+$SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN daemon-reload
+$SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN enable $SERVICE_NAME
+$SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN restart $SERVICE_NAME
+$SERVICE_USER ALL=(root) NOPASSWD: $REBOOT_BIN
+EOF
+sudo chmod 0440 "$SUDOERS_TARGET"
 
 sudo tee "$SERVICE_TARGET" >/dev/null <<EOF
 [Unit]
