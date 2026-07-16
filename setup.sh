@@ -7,9 +7,7 @@ SERVICE_NAME="bedside.service"
 SERVICE_TARGET="/etc/systemd/system/$SERVICE_NAME"
 SUDOERS_TARGET="/etc/sudoers.d/bedside-clock"
 VENV_DIR="$REPO_DIR/.venv"
-SERVICE_USER="${SUDO_USER:-$USER}"
-AUTOSTART_DIR="/home/$SERVICE_USER/.config/autostart"
-KIOSK_DESKTOP_FILE="$AUTOSTART_DIR/bedside-kiosk.desktop"
+SERVICE_USER="${SUDO_USER:-${USER:-}}"
 CHROMIUM_BIN=""
 SYSTEMCTL_BIN="$(command -v systemctl)"
 TEE_BIN="$(command -v tee)"
@@ -19,6 +17,13 @@ SKIP_SYSTEM_SETUP="${SKIP_SYSTEM_SETUP:-0}"
 if [ "$SERVICE_USER" = "root" ]; then
   SERVICE_USER="$(logname 2>/dev/null || echo pi)"
 fi
+
+if [ -z "$SERVICE_USER" ]; then
+  SERVICE_USER="$(id -un)"
+fi
+
+AUTOSTART_DIR="/home/$SERVICE_USER/.config/autostart"
+KIOSK_DESKTOP_FILE="$AUTOSTART_DIR/bedside-kiosk.desktop"
 
 echo "Setting up Bedside Clock..."
 
