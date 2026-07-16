@@ -20,6 +20,17 @@ update_state = {
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 CORS(app)
 
+def read_update_log_tail():
+    try:
+        lines = [
+            line.strip()
+            for line in UPDATE_LOG.read_text(encoding='utf-8').splitlines()
+            if line.strip()
+        ]
+        return lines[-1] if lines else ''
+    except FileNotFoundError:
+        return ''
+
 # San Bernardino coordinates
 LATITUDE = 34.1083
 LONGITUDE = -117.2898
@@ -143,22 +154,17 @@ def run_update():
             update_state['message'] = 'Running update...'
             update_state['log_tail'] = ''
             try:
-                result = subprocess.run(
-                    ['/bin/bash', str(UPDATE_SCRIPT)],
-                    cwd=str(BASE_DIR.parent),
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                )
-                log_text = "\n".join(
-                    part for part in [
-                        result.stdout.strip(),
-                        result.stderr.strip(),
-                    ] if part
-                ).strip()
-                if log_text:
-                    UPDATE_LOG.write_text(log_text + "\n", encoding='utf-8')
-                    update_state['log_tail'] = log_text.splitlines()[-1]
+                UPDATE_LOG.write_text('Starting update...\n', encoding='utf-8')
+                with UPDATE_LOG.open('a', encoding='utf-8') as log_file:
+                    result = subprocess.run(
+                        ['/bin/bash', str(UPDATE_SCRIPT)],
+                        cwd=str(BASE_DIR.parent),
+                        stdout=log_file,
+                        stderr=subprocess.STDOUT,
+                        text=True,
+                        check=False,
+                    )
+                update_state['log_tail'] = read_update_log_tail()
                 if result.returncode == 0:
                     update_state['message'] = 'Update complete. Refreshing...'
                 else:
@@ -167,8 +173,6 @@ def run_update():
                         update_state['message'] = f'Update failed: {result.returncode}. {details}'
                     else:
                         update_state['message'] = f'Update failed: {result.returncode}'
-                    print(result.stdout)
-                    print(result.stderr)
             except Exception as exc:
                 update_state['message'] = f'Update error: {exc}'
             finally:
@@ -179,6 +183,8 @@ def run_update():
 
 @app.route('/api/update/status', methods=['GET'])
 def update_status():
+    if update_state['running']:
+        update_state['log_tail'] = read_update_log_tail()
     return jsonify(update_state)
 
 @app.route('/')
