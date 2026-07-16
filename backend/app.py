@@ -3,9 +3,17 @@ from flask_cors import CORS
 from datetime import datetime, timedelta
 import requests
 from pathlib import Path
+import subprocess
+import threading
 
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
+UPDATE_SCRIPT = BASE_DIR.parent / "update.sh"
+update_lock = threading.Lock()
+update_state = {
+    "running": False,
+    "message": "Idle",
+}
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
 CORS(app)
@@ -121,6 +129,41 @@ def get_time():
         'season': get_season(now),
         'events': ['No events scheduled']
     })
+
+@app.route('/api/update', methods=['POST'])
+def run_update():
+    if update_lock.locked():
+        return jsonify({'ok': False, 'message': 'Update already running.'}), 409
+
+    def _run_update():
+        with update_lock:
+            update_state['running'] = True
+            update_state['message'] = 'Running update...'
+            try:
+                result = subprocess.run(
+                    ['/bin/bash', str(UPDATE_SCRIPT)],
+                    cwd=str(BASE_DIR.parent),
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if result.returncode == 0:
+                    update_state['message'] = 'Update complete. Refreshing...'
+                else:
+                    update_state['message'] = f'Update failed: {result.returncode}'
+                    print(result.stdout)
+                    print(result.stderr)
+            except Exception as exc:
+                update_state['message'] = f'Update error: {exc}'
+            finally:
+                update_state['running'] = False
+
+    threading.Thread(target=_run_update, daemon=True).start()
+    return jsonify({'ok': True, 'message': 'Update started.'})
+
+@app.route('/api/update/status', methods=['GET'])
+def update_status():
+    return jsonify(update_state)
 
 @app.route('/')
 def index():

@@ -245,3 +245,41 @@ body {
     min-width: 10rem;
 }
 
+#update-button {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 10;
+    border: 0.08rem solid rgba(255, 255, 255, 0.5);
+    border-radius: 999px;
+    background: rgba(20, 20, 20, 0.72);
+    color: #fff;
+    padding: 0.7rem 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    backdrop-filter: blur(0.2rem);
+    box-shadow: 0 0.3rem 0.9rem rgba(0, 0, 0, 0.25);
+}
+
+#update-button:hover {
+    background: rgba(40, 40, 40, 0.9);
+}
+
+#update-button:disabled {
+    opacity: 0.55;
+    cursor: wait;
+}
+
+#update-status {
+    position: fixed;
+    left: 1rem;
+    bottom: 3.1rem;
+    z-index: 10;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.55rem;
+    text-shadow: 0 0.1rem 0.25rem rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+}
+

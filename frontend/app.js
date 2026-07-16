@@ -83,6 +83,42 @@ function updateDisplay() {
         .catch(error => console.error('Error fetching data:', error));
 }
 
+function updateSoftware() {
+    const button = document.getElementById('update-button');
+    const status = document.getElementById('update-status');
+
+    button.disabled = true;
+    status.textContent = 'Updating...';
+
+    fetch('/api/update', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            status.textContent = data.message || 'Update started.';
+            const poll = setInterval(() => {
+                fetch('/api/update/status')
+                    .then(response => response.json())
+                    .then(state => {
+                        status.textContent = state.message || 'Idle';
+                        if (!state.running) {
+                            button.disabled = false;
+                            clearInterval(poll);
+                        }
+                    })
+                    .catch(() => {
+                        status.textContent = 'Update status unavailable.';
+                        button.disabled = false;
+                        clearInterval(poll);
+                    });
+            }, 2000);
+        })
+        .catch(() => {
+            status.textContent = 'Update failed to start.';
+            button.disabled = false;
+        });
+}
+
 /* Update display immediately and then every second */
 updateDisplay();
 setInterval(updateDisplay, 1000);
+
+document.getElementById('update-button').addEventListener('click', updateSoftware);
