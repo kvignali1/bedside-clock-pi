@@ -150,7 +150,11 @@ def run_update():
                 if result.returncode == 0:
                     update_state['message'] = 'Update complete. Refreshing...'
                 else:
-                    update_state['message'] = f'Update failed: {result.returncode}'
+                    details = (result.stderr or result.stdout or '').strip()
+                    if details:
+                        update_state['message'] = f'Update failed: {result.returncode}. {details.splitlines()[-1]}'
+                    else:
+                        update_state['message'] = f'Update failed: {result.returncode}'
                     print(result.stdout)
                     print(result.stderr)
             except Exception as exc:

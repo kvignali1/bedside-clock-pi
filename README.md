@@ -52,7 +52,7 @@ The frontend is served by the same Flask app, so there is only one service to ma
 
 If Chromium is installed and the Pi is set to auto-login into the desktop, the clock will open in kiosk mode after login.
 
-The clock UI also includes a lower-left update button that runs `update.sh` for you and reboots the Pi after updating. The setup script installs the narrow sudo permissions needed for that flow.
+The clock UI also includes a lower-left update button that runs `update.sh` for you and reboots the Pi after updating. The setup script installs the narrow sudo permissions needed for that flow, and the update script now runs with `bash` so it does not depend on executable file bits.
 
 ## Manual service commands
 
