@@ -14,6 +14,7 @@ CHROMIUM_BIN=""
 SYSTEMCTL_BIN="$(command -v systemctl)"
 TEE_BIN="$(command -v tee)"
 REBOOT_BIN="$(command -v reboot)"
+SKIP_SYSTEM_SETUP="${SKIP_SYSTEM_SETUP:-0}"
 
 if [ "$SERVICE_USER" = "root" ]; then
   SERVICE_USER="$(logname 2>/dev/null || echo pi)"
@@ -41,16 +42,17 @@ fi
 "$VENV_DIR/bin/python" -m pip install --upgrade pip setuptools wheel
 "$VENV_DIR/bin/pip" install --prefer-binary -r "$REPO_DIR/requirements.txt"
 
-sudo tee "$SUDOERS_TARGET" >/dev/null <<EOF
+if [ "$SKIP_SYSTEM_SETUP" != "1" ]; then
+  sudo tee "$SUDOERS_TARGET" >/dev/null <<EOF
 $SERVICE_USER ALL=(root) NOPASSWD: $TEE_BIN $SERVICE_TARGET
 $SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN daemon-reload
 $SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN enable $SERVICE_NAME
 $SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN restart $SERVICE_NAME
 $SERVICE_USER ALL=(root) NOPASSWD: $REBOOT_BIN
 EOF
-sudo chmod 0440 "$SUDOERS_TARGET"
+  sudo chmod 0440 "$SUDOERS_TARGET"
 
-sudo tee "$SERVICE_TARGET" >/dev/null <<EOF
+  sudo tee "$SERVICE_TARGET" >/dev/null <<EOF
 [Unit]
 Description=Bedside Clock Backend
 After=network-online.target
@@ -69,23 +71,24 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable "$SERVICE_NAME"
-sudo systemctl restart "$SERVICE_NAME"
+  sudo systemctl daemon-reload
+  sudo systemctl enable "$SERVICE_NAME"
+  sudo systemctl restart "$SERVICE_NAME"
 
-if [ -n "$CHROMIUM_BIN" ]; then
-  mkdir -p "$AUTOSTART_DIR"
-  cat > "$KIOSK_DESKTOP_FILE" <<EOF
+  if [ -n "$CHROMIUM_BIN" ]; then
+    mkdir -p "$AUTOSTART_DIR"
+    cat > "$KIOSK_DESKTOP_FILE" <<EOF
 [Desktop Entry]
 Type=Application
 Name=Bedside Clock Kiosk
 Exec=$CHROMIUM_BIN --kiosk --noerrdialogs --disable-infobars --incognito --overscroll-history-navigation=0 http://localhost:5000/
 X-GNOME-Autostart-enabled=true
 EOF
-  echo "Kiosk autostart installed for $CHROMIUM_BIN."
-else
-  echo "Chromium not found; skipping kiosk autostart."
-  echo "Install chromium-browser or chromium if you want automatic kiosk mode."
+    echo "Kiosk autostart installed for $CHROMIUM_BIN."
+  else
+    echo "Chromium not found; skipping kiosk autostart."
+    echo "Install chromium-browser or chromium if you want automatic kiosk mode."
+  fi
 fi
 
 echo "Setup complete."
