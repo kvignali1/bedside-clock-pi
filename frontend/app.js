@@ -99,6 +99,9 @@ function updateSoftware() {
                     .then(response => response.json())
                     .then(state => {
                         status.textContent = state.message || 'Idle';
+                        if (state.log_tail) {
+                            status.textContent = `${state.message || 'Idle'} ${state.log_tail}`;
+                        }
                         if (!state.running) {
                             button.disabled = false;
                             clearInterval(poll);

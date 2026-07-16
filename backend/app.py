@@ -9,10 +9,12 @@ import threading
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
 UPDATE_SCRIPT = BASE_DIR.parent / "update.sh"
+UPDATE_LOG = BASE_DIR.parent / "update.log"
 update_lock = threading.Lock()
 update_state = {
     "running": False,
     "message": "Idle",
+    "log_tail": "",
 }
 
 app = Flask(__name__, static_folder=str(FRONTEND_DIR), static_url_path="")
@@ -139,6 +141,7 @@ def run_update():
         with update_lock:
             update_state['running'] = True
             update_state['message'] = 'Running update...'
+            update_state['log_tail'] = ''
             try:
                 result = subprocess.run(
                     ['/bin/bash', str(UPDATE_SCRIPT)],
@@ -147,12 +150,21 @@ def run_update():
                     text=True,
                     check=False,
                 )
+                log_text = "\n".join(
+                    part for part in [
+                        result.stdout.strip(),
+                        result.stderr.strip(),
+                    ] if part
+                ).strip()
+                if log_text:
+                    UPDATE_LOG.write_text(log_text + "\n", encoding='utf-8')
+                    update_state['log_tail'] = log_text.splitlines()[-1]
                 if result.returncode == 0:
                     update_state['message'] = 'Update complete. Refreshing...'
                 else:
-                    details = (result.stderr or result.stdout or '').strip()
+                    details = update_state['log_tail']
                     if details:
-                        update_state['message'] = f'Update failed: {result.returncode}. {details.splitlines()[-1]}'
+                        update_state['message'] = f'Update failed: {result.returncode}. {details}'
                     else:
                         update_state['message'] = f'Update failed: {result.returncode}'
                     print(result.stdout)
