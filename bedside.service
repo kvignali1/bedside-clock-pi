@@ -6,7 +6,6 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=kvignali1
-Group=kvignali1
 WorkingDirectory=/home/kvignali1/Bedside_clock_pi
 Environment=PYTHONUNBUFFERED=1
 ExecStart=/home/kvignali1/Bedside_clock_pi/.venv/bin/python /home/kvignali1/Bedside_clock_pi/backend/app.py

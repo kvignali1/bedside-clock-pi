@@ -2,7 +2,7 @@
 
 This project is designed to run on a Raspberry Pi as a small always-on bedside clock dashboard.
 
-The backend starts automatically as a systemd service and also serves the frontend. Once it is running, the display can open `http://localhost:5000/` and the page will keep itself updated from the backend API.
+The backend starts automatically as a systemd service and also serves the frontend. The setup script can also install a Chromium kiosk autostart so the Pi opens the clock full-screen on login.
 
 ## What it does
 
@@ -16,6 +16,7 @@ The backend starts automatically as a systemd service and also serves the fronte
 - `frontend/` - static HTML, CSS, and JavaScript for the display
 - `bedside.service` - systemd service file
 - `setup.sh` - installs Python dependencies and enables the service
+- Chromium kiosk autostart is created during setup if Chromium is installed
 
 ## Raspberry Pi setup
 
@@ -41,12 +42,15 @@ The setup script will:
 - Reload systemd
 - Enable the service at boot
 - Restart the service immediately
+- Create a kiosk autostart entry for Chromium if it is available
 
 ## Service behavior
 
 After setup, the backend will start automatically on boot.
 
 The frontend is served by the same Flask app, so there is only one service to manage.
+
+If Chromium is installed and the Pi is set to auto-login into the desktop, the clock will open in kiosk mode after login.
 
 ## Manual service commands
 
@@ -62,3 +66,4 @@ sudo systemctl enable bedside.service
 - The backend uses `weather.gov` for weather data.
 - The install script works from the repo root, so it does not depend on a hard-coded folder name.
 - If `python3 -m venv` fails, install `python3-venv` on the Pi and rerun the setup script.
+- If kiosk mode does not launch, make sure Chromium is installed and desktop auto-login is enabled on the Pi.
