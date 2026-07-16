@@ -75,6 +75,14 @@ If Chromium is installed and the Pi is set to auto-login into the desktop, the c
 
 The clock UI also includes a lower-left update button that runs `update.sh` for you and reboots the Pi after updating. The setup script installs the narrow sudo permissions needed for that flow, and the update script now runs with `bash` so it does not depend on executable file bits.
 
+The kiosk launcher also keeps the screen awake and manages brightness:
+
+- `100%` while awake
+- `50%` from `7:00 PM` to `7:29 PM`
+- `5%` from `7:30 PM` until `1:00 AM`
+
+That sleep schedule is applied on the nights leading into your Sunday through Wednesday early wake-up days.
+
 ## Manual service commands
 
 ```bash

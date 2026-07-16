@@ -124,13 +124,13 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    font-size: 4rem;
+    font-size: 5rem;
 }
 
 .segment-digit {
     display: inline-block;
-    width: 4rem;
-    height: 6.4rem;
+    width: 5rem;
+    height: 8rem;
     position: relative;
 }
 
@@ -139,15 +139,15 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 0.8rem;
-    height: 6.4rem;
+    width: 1rem;
+    height: 8rem;
 }
 
 .colon::before,
 .colon::after {
     content: '';
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.62rem;
+    height: 0.62rem;
     background-color: #ffffff;
     border-radius: 50%;
     box-shadow: 0 0 0.5rem rgba(255, 255, 255, 0.65);
@@ -166,51 +166,51 @@ body {
 /* Segment positions */
 .top {
     top: 0;
-    left: 0.4rem;
-    width: 3.2rem;
-    height: 0.45rem;
+    left: 0.5rem;
+    width: 4rem;
+    height: 0.56rem;
 }
 
 .top-left {
-    top: 0.65rem;
+    top: 0.82rem;
     left: 0;
-    width: 0.45rem;
-    height: 2.45rem;
+    width: 0.56rem;
+    height: 3.06rem;
 }
 
 .top-right {
-    top: 0.65rem;
+    top: 0.82rem;
     right: 0;
-    width: 0.45rem;
-    height: 2.45rem;
+    width: 0.56rem;
+    height: 3.06rem;
 }
 
 .middle {
-    top: 2.98rem;
-    left: 0.4rem;
-    width: 3.2rem;
-    height: 0.45rem;
+    top: 3.73rem;
+    left: 0.5rem;
+    width: 4rem;
+    height: 0.56rem;
 }
 
 .bottom-left {
-    bottom: 0.65rem;
+    bottom: 0.82rem;
     left: 0;
-    width: 0.45rem;
-    height: 2.45rem;
+    width: 0.56rem;
+    height: 3.06rem;
 }
 
 .bottom-right {
-    bottom: 0.65rem;
+    bottom: 0.82rem;
     right: 0;
-    width: 0.45rem;
-    height: 2.45rem;
+    width: 0.56rem;
+    height: 3.06rem;
 }
 
 .bottom {
     bottom: 0;
-    left: 0.4rem;
-    width: 3.2rem;
-    height: 0.45rem;
+    left: 0.5rem;
+    width: 4rem;
+    height: 0.56rem;
 }
 
 #analytics {
@@ -405,4 +405,3 @@ body {
         font-size: 1.1rem;
     }
 }
-

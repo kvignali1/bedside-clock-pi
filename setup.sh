@@ -13,6 +13,8 @@ SYSTEMCTL_BIN="$(command -v systemctl)"
 TEE_BIN="$(command -v tee)"
 REBOOT_BIN="$(command -v reboot)"
 SKIP_SYSTEM_SETUP="${SKIP_SYSTEM_SETUP:-0}"
+BACKLIGHT_DIR="$(find /sys/class/backlight -mindepth 1 -maxdepth 1 2>/dev/null | head -n 1 || true)"
+BACKLIGHT_BRIGHTNESS_FILE=""
 
 if [ "$SERVICE_USER" = "root" ]; then
   SERVICE_USER="$(logname 2>/dev/null || echo pi)"
@@ -24,6 +26,11 @@ fi
 
 AUTOSTART_DIR="/home/$SERVICE_USER/.config/autostart"
 KIOSK_DESKTOP_FILE="$AUTOSTART_DIR/bedside-kiosk.desktop"
+
+if [ -n "$BACKLIGHT_DIR" ]; then
+  BACKLIGHT_BRIGHTNESS_FILE="$BACKLIGHT_DIR/brightness"
+  printf '%s\n' "$BACKLIGHT_BRIGHTNESS_FILE" > "$REPO_DIR/.backlight_tee_path"
+fi
 
 echo "Setting up Bedside Clock..."
 
@@ -46,6 +53,7 @@ fi
 
 "$VENV_DIR/bin/python" -m pip install --upgrade pip setuptools wheel
 "$VENV_DIR/bin/pip" install --prefer-binary -r "$REPO_DIR/requirements.txt"
+chmod +x "$REPO_DIR/kiosk.sh" "$REPO_DIR/display_manager.sh"
 
 if [ "$SKIP_SYSTEM_SETUP" != "1" ]; then
   sudo tee "$SUDOERS_TARGET" >/dev/null <<EOF
@@ -55,6 +63,9 @@ $SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN enable $SERVICE_NAME
 $SERVICE_USER ALL=(root) NOPASSWD: $SYSTEMCTL_BIN restart $SERVICE_NAME
 $SERVICE_USER ALL=(root) NOPASSWD: $REBOOT_BIN
 EOF
+  if [ -n "$BACKLIGHT_BRIGHTNESS_FILE" ]; then
+    printf '%s ALL=(root) NOPASSWD: %s %s\n' "$SERVICE_USER" "$TEE_BIN" "$BACKLIGHT_BRIGHTNESS_FILE" | sudo tee -a "$SUDOERS_TARGET" >/dev/null
+  fi
   sudo chmod 0440 "$SUDOERS_TARGET"
 
   sudo tee "$SERVICE_TARGET" >/dev/null <<EOF
@@ -87,7 +98,7 @@ EOF
 [Desktop Entry]
 Type=Application
 Name=Bedside Clock Kiosk
-Exec=$CHROMIUM_BIN --kiosk --noerrdialogs --disable-infobars --incognito --overscroll-history-navigation=0 http://localhost:5000/
+Exec=/bin/bash $REPO_DIR/kiosk.sh $CHROMIUM_BIN
 X-GNOME-Autostart-enabled=true
 EOF
     echo "Kiosk autostart installed for $CHROMIUM_BIN."
