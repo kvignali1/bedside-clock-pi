@@ -9,6 +9,6 @@ cd "$REPO_DIR"
 
 git pull --ff-only
 ./setup.sh
-sudo systemctl restart bedside.service
+sudo reboot
 
 echo "Update complete!"
