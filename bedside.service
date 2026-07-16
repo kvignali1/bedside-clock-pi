@@ -5,11 +5,11 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=pi
-Group=pi
-WorkingDirectory=/home/pi/Bedside_clock_pi
+User=kvignali1
+Group=kvignali1
+WorkingDirectory=/home/kvignali1/Bedside_clock_pi
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/home/pi/Bedside_clock_pi/.venv/bin/python /home/pi/Bedside_clock_pi/backend/app.py
+ExecStart=/home/kvignali1/Bedside_clock_pi/.venv/bin/python /home/kvignali1/Bedside_clock_pi/backend/app.py
 Restart=on-failure
 RestartSec=5
 

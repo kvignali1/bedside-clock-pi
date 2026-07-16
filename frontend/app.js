@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 /* 7-segment display mapping: which segments to light for each digit */
 const SEGMENT_MAP = {
