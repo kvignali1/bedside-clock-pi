@@ -75,7 +75,7 @@ function updateDisplay() {
             
             const eventDiv = document.getElementById('event');
             if (data.events && data.events.length > 0) {
-                eventDiv.textContent = data.events[0];
+                eventDiv.textContent = data.events.join('\n\n');
             } else {
                 eventDiv.textContent = 'No events scheduled';
             }

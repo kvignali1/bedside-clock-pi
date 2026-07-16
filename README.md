@@ -44,6 +44,27 @@ The setup script will:
 - Restart the service immediately
 - Create a kiosk autostart entry for Chromium if it is available
 
+## Google Calendar
+
+Create a `.env` file in the repo root on the Pi and add:
+
+```bash
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REFRESH_TOKEN=your-google-refresh-token
+GOOGLE_CALENDAR_ID=primary
+CALENDAR_TIMEZONE=America/Los_Angeles
+```
+
+You can start from `.env.example`.
+
+After adding calendar credentials, rerun:
+
+```bash
+./setup.sh
+sudo systemctl restart bedside.service
+```
+
 ## Service behavior
 
 After setup, the backend will start automatically on boot.
@@ -70,4 +91,6 @@ sudo systemctl enable bedside.service
 - If `python3 -m venv` fails, install `python3-venv` on the Pi and rerun the setup script.
 - If kiosk mode does not launch, make sure Chromium is installed and desktop auto-login is enabled on the Pi.
 - If the update button fails, you can still run `./update.sh` from SSH on the Pi.
+- Google Calendar support uses `.env` values for `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CALENDAR_ID`, and optional `CALENDAR_TIMEZONE`.
+- The bedside app reads today's events from the configured Google Calendar and shows up to six entries in the events panel.
 - If the update button says idle, make sure you have pulled the latest repo version and rerun `./setup.sh` so the sudo permissions are installed.

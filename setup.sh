@@ -68,6 +68,7 @@ Type=simple
 User=$SERVICE_USER
 WorkingDirectory=$REPO_DIR
 Environment=PYTHONUNBUFFERED=1
+EnvironmentFile=-$REPO_DIR/.env
 ExecStart=$VENV_DIR/bin/python $REPO_DIR/backend/app.py
 Restart=on-failure
 RestartSec=5

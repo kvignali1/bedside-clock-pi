@@ -5,6 +5,8 @@ import requests
 from pathlib import Path
 import subprocess
 import threading
+import os
+from zoneinfo import ZoneInfo
 
 BASE_DIR = Path(__file__).resolve().parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
@@ -34,6 +36,87 @@ def read_update_log_tail():
 # San Bernardino coordinates
 LATITUDE = 34.1083
 LONGITUDE = -117.2898
+CALENDAR_TIMEZONE = os.getenv('CALENDAR_TIMEZONE', 'America/Los_Angeles')
+GOOGLE_CALENDAR_ID = os.getenv('GOOGLE_CALENDAR_ID', 'primary')
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_REFRESH_TOKEN = os.getenv('GOOGLE_REFRESH_TOKEN')
+
+def format_event_time(start_dt, end_dt, all_day):
+    if all_day:
+        return 'All day'
+    return f"{start_dt.strftime('%-I:%M %p')} - {end_dt.strftime('%-I:%M %p')}"
+
+def get_google_access_token():
+    if not all([GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN]):
+        return None
+
+    response = requests.post(
+        'https://oauth2.googleapis.com/token',
+        data={
+            'client_id': GOOGLE_CLIENT_ID,
+            'client_secret': GOOGLE_CLIENT_SECRET,
+            'refresh_token': GOOGLE_REFRESH_TOKEN,
+            'grant_type': 'refresh_token',
+        },
+        timeout=10,
+    )
+    response.raise_for_status()
+    return response.json().get('access_token')
+
+def get_calendar_events(now):
+    if not all([GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN]):
+        return ['Set Google Calendar env vars to load events']
+
+    tz = ZoneInfo(CALENDAR_TIMEZONE)
+    window_start = now.astimezone(tz).replace(hour=0, minute=0, second=0, microsecond=0)
+    window_end = window_start + timedelta(days=1)
+
+    try:
+        access_token = get_google_access_token()
+        if not access_token:
+            return ['Unable to authenticate Google Calendar']
+
+        response = requests.get(
+            f'https://www.googleapis.com/calendar/v3/calendars/{GOOGLE_CALENDAR_ID}/events',
+            params={
+                'singleEvents': 'true',
+                'orderBy': 'startTime',
+                'timeMin': window_start.isoformat(),
+                'timeMax': window_end.isoformat(),
+                'maxResults': 6,
+            },
+            headers={'Authorization': f'Bearer {access_token}'},
+            timeout=10,
+        )
+        response.raise_for_status()
+        items = response.json().get('items', [])
+
+        if not items:
+            return ['No events scheduled']
+
+        events = []
+        for item in items:
+            start_value = item.get('start', {}).get('dateTime') or item.get('start', {}).get('date')
+            end_value = item.get('end', {}).get('dateTime') or item.get('end', {}).get('date')
+            if not start_value or not end_value:
+                continue
+
+            all_day = 'date' in item.get('start', {})
+            if all_day:
+                start_dt = datetime.fromisoformat(start_value).replace(tzinfo=tz)
+                end_dt = datetime.fromisoformat(end_value).replace(tzinfo=tz)
+            else:
+                start_dt = datetime.fromisoformat(start_value).astimezone(tz)
+                end_dt = datetime.fromisoformat(end_value).astimezone(tz)
+
+            title = item.get('summary') or 'Untitled event'
+            events.append(f"{format_event_time(start_dt, end_dt, all_day)}  {title}")
+
+        return events or ['No events scheduled']
+    except Exception as exc:
+        print(f'Google Calendar error: {exc}')
+        return ['Calendar unavailable']
 
 def get_season(date):
     """Get the official season based on the date"""
@@ -127,8 +210,10 @@ def get_weather():
 @app.route('/api/time', methods=['GET'])
 def get_time():
     """Returns the current time, date, and weather data"""
-    now = datetime.now() + timedelta(seconds=5)
+    tz = ZoneInfo(CALENDAR_TIMEZONE)
+    now = datetime.now(tz) + timedelta(seconds=5)
     weather = get_weather()
+    events = get_calendar_events(now)
     
     return jsonify({
         'time': now.strftime('%H:%M:%S'),
@@ -140,7 +225,7 @@ def get_time():
         'cloud_coverage': weather['cloud_cover'],
         'humidity': weather['humidity'],
         'season': get_season(now),
-        'events': ['No events scheduled']
+        'events': events
     })
 
 @app.route('/api/update', methods=['POST'])
