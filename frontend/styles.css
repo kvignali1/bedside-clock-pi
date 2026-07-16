@@ -235,13 +235,15 @@ body {
 
 #calendar {
     width: 25%;
-    background-color: rgb(236, 235, 210);
+    background-color: rgb(99, 99, 99);
     color: black;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    align-items: center;
     padding: 2.5rem 1.5rem 6rem;
     gap: 1.5rem;
+    text-align: center;
 }
 
 #events-title {
@@ -250,6 +252,7 @@ body {
     text-transform: uppercase;
     border-bottom: 0.12rem solid rgba(0, 0, 0, 0.2);
     padding-bottom: 0.8rem;
+    width: 100%;
 }
 
 #event {
@@ -258,6 +261,7 @@ body {
     margin-top: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+    width: 100%;
 }
 
 #update-button {
