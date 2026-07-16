@@ -1,0 +1,17 @@
+[Unit]
+Description=Bedside Clock Backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/Bedside_clock_pi
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/pi/Bedside_clock_pi/.venv/bin/python /home/pi/Bedside_clock_pi/backend/app.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
