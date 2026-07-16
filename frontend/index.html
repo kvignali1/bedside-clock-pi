@@ -8,11 +8,26 @@
 </head>
 <body>
     <div id="clock">
-        <div id="time">0:00:00</div>
+        <div id="day-night-display">
+            <div id="sky"></div>
+            <div id="celestial-body"></div>
+        </div>
+        <div id="segment-display">
+            <div id="digit-1" class="segment-digit"></div>
+            <div id="digit-2" class="segment-digit"></div>
+            <div class="colon">:</div>
+            <div id="digit-3" class="segment-digit"></div>
+            <div id="digit-4" class="segment-digit"></div>
+            <div class="colon">:</div>
+            <div id="digit-5" class="segment-digit"></div>
+            <div id="digit-6" class="segment-digit"></div>
+        </div>
         <div id="analytics">
-            <div id="tempurature">75°F</div>
+            <div id="tempurature">0°F</div>
             <div id="precipitation">💧 0%</div>
             <div id="cloud-coverage">☁️ 0%</div>
+            <div id="humidity">0%</div>
+            <div id="season"></div>
         </div>
     </div>
     <div id="calendar">

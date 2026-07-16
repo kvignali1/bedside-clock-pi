@@ -1,0 +1,88 @@
+const API_URL = 'http://localhost:5000/api';
+
+/* 7-segment display mapping: which segments to light for each digit */
+const SEGMENT_MAP = {
+    0: ['top', 'top-right', 'bottom-right', 'bottom', 'bottom-left', 'top-left'],
+    1: ['top-right', 'bottom-right'],
+    2: ['top', 'top-right', 'middle', 'bottom-left', 'bottom'],
+    3: ['top', 'top-right', 'middle', 'bottom-right', 'bottom'],
+    4: ['top-left', 'middle', 'top-right', 'bottom-right'],
+    5: ['top', 'top-left', 'middle', 'bottom-right', 'bottom'],
+    6: ['top', 'top-left', 'middle', 'bottom-left', 'bottom', 'bottom-right'],
+    7: ['top', 'top-right', 'bottom-right'],
+    8: ['top', 'top-right', 'bottom-right', 'bottom', 'bottom-left', 'top-left', 'middle'],
+    9: ['top', 'top-right', 'bottom-right', 'bottom', 'top-left', 'middle']
+};
+
+function renderSegmentDigit(digitId, value) {
+    const digit = document.getElementById(digitId);
+    digit.innerHTML = '';
+    
+    const segments = SEGMENT_MAP[parseInt(value)] || SEGMENT_MAP[0];
+    
+    ['top', 'top-left', 'top-right', 'middle', 'bottom-left', 'bottom-right', 'bottom'].forEach(segName => {
+        const seg = document.createElement('div');
+        seg.className = `segment ${segName}`;
+        if (segments.includes(segName)) {
+            seg.classList.add('active');
+        }
+        digit.appendChild(seg);
+    });
+}
+
+function isDaytime(hour) {
+    /* Day is from 6 AM (6) to 6 PM (18) */
+    return hour >= 6 && hour < 18;
+}
+
+function updateDisplay() {
+    fetch(`${API_URL}/time`)
+        .then(response => response.json())
+        .then(data => {
+            const timeStr = data.time;
+            const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+            
+            /* Render 7-segment display */
+            const h = String(hours).padStart(2, '0');
+            const m = String(minutes).padStart(2, '0');
+            const s = String(seconds).padStart(2, '0');
+            
+            renderSegmentDigit('digit-1', h[0]);
+            renderSegmentDigit('digit-2', h[1]);
+            renderSegmentDigit('digit-3', m[0]);
+            renderSegmentDigit('digit-4', m[1]);
+            renderSegmentDigit('digit-5', s[0]);
+            renderSegmentDigit('digit-6', s[1]);
+            
+            document.getElementById('tempurature').textContent = data.temperature + '°F';
+            document.getElementById('precipitation').textContent = '💧 ' + data.precipitation + '%';
+            document.getElementById('cloud-coverage').textContent = '☁️ ' + data.cloud_coverage + '%';
+            document.getElementById('humidity').textContent = '💨 ' + data.humidity + '%';
+            document.getElementById('season').textContent = data.season;
+            document.getElementById('date').textContent = data.date;
+            
+            /* Update day/night display */
+            const sky = document.getElementById('sky');
+            const body = document.getElementById('celestial-body');
+            
+            if (isDaytime(hours)) {
+                sky.className = 'daytime';
+                body.classList.remove('moon');
+            } else {
+                sky.className = 'nighttime';
+                body.classList.add('moon');
+            }
+            
+            const eventDiv = document.getElementById('event');
+            if (data.events && data.events.length > 0) {
+                eventDiv.textContent = data.events[0];
+            } else {
+                eventDiv.textContent = 'No events scheduled';
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+/* Update display immediately and then every second */
+updateDisplay();
+setInterval(updateDisplay, 1000);
