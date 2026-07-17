@@ -36,6 +36,61 @@ function isDaytime(hour) {
     return hour >= 6 && hour < 18;
 }
 
+function determineScene(data, hours) {
+    if (data.precipitation >= 20) {
+        return 'rain';
+    }
+    if (isDaytime(hours)) {
+        return 'day';
+    }
+    return 'night';
+}
+
+function seedAtmosphere() {
+    const starsLayer = document.getElementById('stars-layer');
+    const rainLayer = document.getElementById('rain-layer');
+
+    if (starsLayer && !starsLayer.children.length) {
+        for (let i = 0; i < 70; i += 1) {
+            const star = document.createElement('span');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 62}%`;
+            star.style.width = `${0.12 + Math.random() * 0.26}rem`;
+            star.style.height = star.style.width;
+            star.style.animationDelay = `${Math.random() * 6}s`;
+            star.style.animationDuration = `${2.6 + Math.random() * 3.4}s`;
+            star.style.opacity = `${0.3 + Math.random() * 0.7}`;
+            starsLayer.appendChild(star);
+        }
+    }
+
+    if (rainLayer && !rainLayer.children.length) {
+        for (let i = 0; i < 90; i += 1) {
+            const drop = document.createElement('span');
+            drop.className = 'rain-drop';
+            drop.style.left = `${Math.random() * 100}%`;
+            drop.style.animationDelay = `${Math.random() * 2.8}s`;
+            drop.style.animationDuration = `${0.7 + Math.random() * 0.8}s`;
+            drop.style.opacity = `${0.15 + Math.random() * 0.5}`;
+            drop.style.height = `${1.6 + Math.random() * 2.8}rem`;
+            rainLayer.appendChild(drop);
+        }
+    }
+}
+
+function applyScene(data, hours) {
+    const clock = document.getElementById('clock');
+    const nextScene = determineScene(data, hours);
+
+    clock.classList.remove('scene-day', 'scene-night', 'scene-rain', 'cloudy');
+    clock.classList.add(`scene-${nextScene}`);
+
+    if (data.cloud_coverage >= 35) {
+        clock.classList.add('cloudy');
+    }
+}
+
 function updateDisplay() {
     fetch(`${API_URL}/time`)
         .then(response => response.json())
@@ -61,6 +116,7 @@ function updateDisplay() {
             document.getElementById('humidity').textContent = `${data.humidity}%`;
             document.getElementById('season').textContent = data.season;
             document.getElementById('date').textContent = data.date;
+            applyScene(data, hours);
 
             /* Update day/night display */
             const sky = document.getElementById('sky');
@@ -75,7 +131,7 @@ function updateDisplay() {
             }
 
         })
-        .catch(error => console.error('Error fetching data:', error));
+    .catch(error => console.error('Error fetching data:', error));
 }
 
 function updateSoftware() {
@@ -129,6 +185,7 @@ function updateSoftware() {
 }
 
 /* Update display immediately and then every second */
+seedAtmosphere();
 updateDisplay();
 setInterval(updateDisplay, 1000);
 

@@ -22,6 +22,248 @@ body {
     justify-content: center;
 }
 
+#scene-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.scene-backdrop,
+.scene-gradient,
+#stars-layer,
+#shooting-stars-layer,
+#cloud-layer,
+#birds-layer,
+#rain-layer,
+#rain-splashes-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.scene-backdrop {
+    background-image: url('assets/scenes/day-sky.png');
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.08);
+    filter: saturate(1.02) contrast(1.02);
+    transition: opacity 0.8s ease, filter 0.8s ease, background-image 0.8s ease;
+}
+
+.scene-gradient {
+    background:
+        radial-gradient(circle at 50% 55%, rgba(0, 0, 0, 0.08), transparent 34%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.24));
+    mix-blend-mode: screen;
+    opacity: 0.55;
+}
+
+#stars-layer,
+#shooting-stars-layer,
+#rain-layer,
+#rain-splashes-layer,
+#birds-layer {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+#cloud-layer {
+    opacity: 0.65;
+    transition: opacity 0.8s ease;
+}
+
+.star {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0%, rgba(204, 227, 255, 0.9) 45%, rgba(173, 201, 255, 0.1) 100%);
+    box-shadow: 0 0 0.8rem rgba(185, 215, 255, 0.85);
+    animation: star-flicker 4s ease-in-out infinite;
+}
+
+.shooting-star {
+    position: absolute;
+    width: 11rem;
+    height: 0.16rem;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(153, 204, 255, 0));
+    border-radius: 999px;
+    box-shadow: 0 0 1rem rgba(180, 220, 255, 0.8);
+    transform: rotate(-26deg) translateX(0);
+    opacity: 0;
+}
+
+.shooting-star::before {
+    content: '';
+    position: absolute;
+    right: -0.2rem;
+    top: -0.18rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 1rem rgba(255, 255, 255, 0.9);
+}
+
+.shooting-star:nth-child(1) {
+    top: 14%;
+    left: 62%;
+    animation: shooting-star-flight 15s linear infinite;
+    animation-delay: 1s;
+}
+
+.shooting-star:nth-child(2) {
+    top: 28%;
+    left: 18%;
+    animation: shooting-star-flight 18s linear infinite;
+    animation-delay: 7s;
+}
+
+.shooting-star:nth-child(3) {
+    top: 8%;
+    left: 38%;
+    animation: shooting-star-flight 21s linear infinite;
+    animation-delay: 12s;
+}
+
+.scene-cloud {
+    position: absolute;
+    width: 28rem;
+    height: 10rem;
+    border-radius: 999px;
+    background:
+        radial-gradient(circle at 30% 45%, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.12) 55%, transparent 68%),
+        radial-gradient(circle at 56% 42%, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.1) 58%, transparent 72%),
+        radial-gradient(circle at 72% 55%, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.08) 52%, transparent 70%);
+    filter: blur(0.25rem);
+    opacity: 0.55;
+}
+
+.cloud-a {
+    --cloud-scale: 0.95;
+    top: 10%;
+    left: -18rem;
+    animation: cloud-drift 45s linear infinite;
+}
+
+.cloud-b {
+    --cloud-scale: 1.25;
+    top: 22%;
+    left: -26rem;
+    animation: cloud-drift 68s linear infinite;
+    animation-delay: -18s;
+}
+
+.cloud-c {
+    --cloud-scale: 1.15;
+    top: 58%;
+    left: -20rem;
+    animation: cloud-drift 58s linear infinite;
+    animation-delay: -32s;
+}
+
+.cloud-d {
+    --cloud-scale: 0.85;
+    top: 42%;
+    left: -30rem;
+    animation: cloud-drift 76s linear infinite;
+    animation-delay: -9s;
+}
+
+.bird {
+    position: absolute;
+    width: 2.6rem;
+    height: 1.2rem;
+    opacity: 0;
+}
+
+.bird::before,
+.bird::after {
+    content: '';
+    position: absolute;
+    top: 0.2rem;
+    width: 1.3rem;
+    height: 0.5rem;
+    border-top: 0.16rem solid rgba(35, 43, 58, 0.85);
+    border-radius: 50% 50% 0 0;
+}
+
+.bird::before {
+    left: 0;
+    transform: rotate(12deg);
+}
+
+.bird::after {
+    right: 0;
+    transform: rotate(-12deg);
+}
+
+.bird-a {
+    --bird-scale: 0.85;
+    top: 20%;
+    left: -8rem;
+    animation: bird-flight 22s linear infinite;
+    animation-delay: 4s;
+}
+
+.bird-b {
+    --bird-scale: 0.72;
+    top: 30%;
+    left: -10rem;
+    animation: bird-flight 27s linear infinite;
+    animation-delay: 13s;
+}
+
+.rain-drop {
+    position: absolute;
+    top: -12%;
+    width: 0.1rem;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(196, 226, 255, 0.85));
+    filter: blur(0.02rem);
+    animation: rain-fall 1.1s linear infinite;
+}
+
+.splash {
+    position: absolute;
+    bottom: 6%;
+    width: 2.6rem;
+    height: 0.8rem;
+    border: 0.12rem solid rgba(220, 239, 255, 0.75);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0.2);
+}
+
+.splash-a {
+    left: 18%;
+    animation: splash-ring 5s ease-out infinite;
+}
+
+.splash-b {
+    left: 52%;
+    animation: splash-ring 7s ease-out infinite;
+    animation-delay: 2.5s;
+}
+
+.splash-c {
+    left: 76%;
+    animation: splash-ring 6.5s ease-out infinite;
+    animation-delay: 1s;
+}
+
+#clock-main,
+#analytics,
+#day-night-display,
+#update-button,
+#update-status,
+#update-banner {
+    position: relative;
+    z-index: 2;
+}
+
+#clock-main {
+    text-shadow: 0 0.18rem 1.4rem rgba(0, 0, 0, 0.7);
+}
+
 #day-temps {
     position: absolute;
     top: 1rem;
@@ -243,6 +485,158 @@ body {
     text-transform: uppercase;
 }
 
+#clock.scene-day .scene-backdrop {
+    background-image: url('assets/scenes/day-sky.png');
+    filter: saturate(1.08) contrast(1.03);
+}
+
+#clock.scene-day .scene-gradient {
+    background:
+        radial-gradient(circle at 82% 12%, rgba(255, 241, 184, 0.36), transparent 18%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(15, 38, 72, 0.18));
+}
+
+#clock.scene-day #cloud-layer {
+    opacity: 0.45;
+}
+
+#clock.scene-day.cloudy #cloud-layer {
+    opacity: 0.72;
+}
+
+#clock.scene-day #birds-layer {
+    opacity: 0.9;
+}
+
+#clock.scene-night .scene-backdrop {
+    background-image: url('assets/scenes/night-sky.png');
+    filter: saturate(1.05) contrast(1.08) brightness(0.86);
+}
+
+#clock.scene-night .scene-gradient {
+    background:
+        radial-gradient(circle at 50% 0%, rgba(101, 132, 190, 0.08), transparent 30%),
+        linear-gradient(180deg, rgba(1, 9, 26, 0.22), rgba(1, 4, 16, 0.58));
+}
+
+#clock.scene-night #stars-layer,
+#clock.scene-night #shooting-stars-layer {
+    opacity: 1;
+}
+
+#clock.scene-night #cloud-layer {
+    opacity: 0.34;
+}
+
+#clock.scene-rain .scene-backdrop {
+    background-image: url('assets/scenes/rain-sky.png');
+    filter: saturate(0.78) contrast(1.02) brightness(0.76);
+}
+
+#clock.scene-rain .scene-gradient {
+    background:
+        linear-gradient(180deg, rgba(20, 26, 36, 0.22), rgba(2, 7, 14, 0.55)),
+        radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.08), transparent 32%);
+}
+
+#clock.scene-rain #cloud-layer {
+    opacity: 0.92;
+}
+
+#clock.scene-rain .scene-cloud {
+    background:
+        radial-gradient(circle at 30% 45%, rgba(89, 101, 118, 0.86), rgba(47, 56, 69, 0.35) 55%, transparent 68%),
+        radial-gradient(circle at 56% 42%, rgba(94, 104, 121, 0.82), rgba(43, 51, 61, 0.28) 58%, transparent 72%),
+        radial-gradient(circle at 72% 55%, rgba(79, 90, 108, 0.9), rgba(43, 51, 61, 0.22) 52%, transparent 70%);
+    filter: blur(0.38rem);
+}
+
+#clock.scene-rain #rain-layer,
+#clock.scene-rain #rain-splashes-layer {
+    opacity: 1;
+}
+
+#clock.scene-rain #birds-layer,
+#clock.scene-rain #stars-layer,
+#clock.scene-rain #shooting-stars-layer {
+    opacity: 0;
+}
+
+@keyframes star-flicker {
+    0%, 100% {
+        transform: scale(0.9);
+        opacity: 0.35;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+@keyframes shooting-star-flight {
+    0%, 82%, 100% {
+        opacity: 0;
+        transform: rotate(-26deg) translate3d(0, 0, 0);
+    }
+    84% {
+        opacity: 1;
+    }
+    94% {
+        opacity: 1;
+        transform: rotate(-26deg) translate3d(-22rem, 14rem, 0);
+    }
+    100% {
+        opacity: 0;
+        transform: rotate(-26deg) translate3d(-28rem, 18rem, 0);
+    }
+}
+
+@keyframes cloud-drift {
+    from {
+        transform: translateX(0) scale(var(--cloud-scale, 1));
+    }
+    to {
+        transform: translateX(calc(100vw + 40rem)) scale(var(--cloud-scale, 1));
+    }
+}
+
+@keyframes bird-flight {
+    0%, 12% {
+        opacity: 0;
+        transform: translateX(0) translateY(0) scale(var(--bird-scale, 0.85));
+    }
+    16%, 84% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(calc(100vw + 14rem)) translateY(-2rem) scale(var(--bird-scale, 0.85));
+    }
+}
+
+@keyframes rain-fall {
+    from {
+        transform: translate3d(0, -10vh, 0) rotate(12deg);
+    }
+    to {
+        transform: translate3d(-4vw, 110vh, 0) rotate(12deg);
+    }
+}
+
+@keyframes splash-ring {
+    0%, 70%, 100% {
+        opacity: 0;
+        transform: scale(0.2);
+    }
+    74% {
+        opacity: 0.65;
+    }
+    92% {
+        opacity: 0.15;
+        transform: scale(1.2);
+    }
+}
+
 #update-button {
     position: fixed;
     left: 1rem;
@@ -322,6 +716,19 @@ body {
     .metric-icon {
         width: 1.1rem;
         height: 1.1rem;
+    }
+
+    .scene-cloud {
+        width: 18rem;
+        height: 7rem;
+    }
+
+    .shooting-star {
+        width: 6rem;
+    }
+
+    .bird {
+        width: 1.8rem;
     }
 
     #segment-display {
