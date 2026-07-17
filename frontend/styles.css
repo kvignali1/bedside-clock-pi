@@ -519,8 +519,6 @@ body {
     height: 1.35rem;
     object-fit: contain;
     flex-shrink: 0;
-    mix-blend-mode: screen;
-    filter: brightness(1.08) contrast(1.08);
 }
 
 #date {
