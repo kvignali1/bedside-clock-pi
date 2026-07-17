@@ -436,10 +436,12 @@ body {
 
 .segment {
     position: absolute;
-    background-color: #333;
+    background-color: transparent;
+    opacity: 0;
 }
 
 .segment.active {
+    opacity: 1;
     background-color: #ffffff;
     box-shadow: 0 0 0.2rem #ffffff;
 }
@@ -517,6 +519,8 @@ body {
     height: 1.35rem;
     object-fit: contain;
     flex-shrink: 0;
+    mix-blend-mode: screen;
+    filter: brightness(1.08) contrast(1.08);
 }
 
 #date {

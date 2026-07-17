@@ -86,7 +86,14 @@ def get_weather():
         points_response = requests.get(points_url)
         
         if points_response.status_code != 200:
-            return {'temperature': 75, 'precipitation': 0, 'cloud_cover': 0, 'humidity': 0}
+            return {
+                'temperature': 75,
+                'high_temp': 85,
+                'low_temp': 65,
+                'precipitation': 0,
+                'cloud_cover': 0,
+                'humidity': 0,
+            }
         
         points_data = points_response.json()
         forecast_url = points_data['properties']['forecast']
