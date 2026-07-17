@@ -124,13 +124,13 @@ body {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    font-size: 5rem;
+    font-size: 6.4rem;
 }
 
 .segment-digit {
     display: inline-block;
-    width: 5rem;
-    height: 8rem;
+    width: 6.4rem;
+    height: 10.24rem;
     position: relative;
 }
 
@@ -139,15 +139,15 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 1rem;
-    height: 8rem;
+    width: 1.28rem;
+    height: 10.24rem;
 }
 
 .colon::before,
 .colon::after {
     content: '';
-    width: 0.62rem;
-    height: 0.62rem;
+    width: 0.8rem;
+    height: 0.8rem;
     background-color: #ffffff;
     border-radius: 50%;
     box-shadow: 0 0 0.5rem rgba(255, 255, 255, 0.65);
@@ -166,51 +166,51 @@ body {
 /* Segment positions */
 .top {
     top: 0;
-    left: 0.5rem;
-    width: 4rem;
-    height: 0.56rem;
+    left: 0.64rem;
+    width: 5.12rem;
+    height: 0.72rem;
 }
 
 .top-left {
-    top: 0.82rem;
+    top: 1.05rem;
     left: 0;
-    width: 0.56rem;
-    height: 3.06rem;
+    width: 0.72rem;
+    height: 3.92rem;
 }
 
 .top-right {
-    top: 0.82rem;
+    top: 1.05rem;
     right: 0;
-    width: 0.56rem;
-    height: 3.06rem;
+    width: 0.72rem;
+    height: 3.92rem;
 }
 
 .middle {
-    top: 3.73rem;
-    left: 0.5rem;
-    width: 4rem;
-    height: 0.56rem;
+    top: 4.78rem;
+    left: 0.64rem;
+    width: 5.12rem;
+    height: 0.72rem;
 }
 
 .bottom-left {
-    bottom: 0.82rem;
+    bottom: 1.05rem;
     left: 0;
-    width: 0.56rem;
-    height: 3.06rem;
+    width: 0.72rem;
+    height: 3.92rem;
 }
 
 .bottom-right {
-    bottom: 0.82rem;
+    bottom: 1.05rem;
     right: 0;
-    width: 0.56rem;
-    height: 3.06rem;
+    width: 0.72rem;
+    height: 3.92rem;
 }
 
 .bottom {
     bottom: 0;
-    left: 0.5rem;
-    width: 4rem;
-    height: 0.56rem;
+    left: 0.64rem;
+    width: 5.12rem;
+    height: 0.72rem;
 }
 
 #analytics {
