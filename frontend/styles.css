@@ -83,8 +83,8 @@ body {
 .shooting-star {
     position: absolute;
     width: 11rem;
-    height: 0.16rem;
-    background: linear-gradient(90deg, rgba(153, 204, 255, 0), rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.98));
+    height: 0.18rem;
+    background: linear-gradient(90deg, rgba(153, 204, 255, 0), rgba(214, 234, 255, 0.45), rgba(255, 255, 255, 0.98));
     border-radius: 999px;
     box-shadow: 0 0 1rem rgba(180, 220, 255, 0.8);
     transform: rotate(-26deg) translateX(0);
@@ -101,6 +101,18 @@ body {
     border-radius: 50%;
     background: #ffffff;
     box-shadow: 0 0 1rem rgba(255, 255, 255, 0.9);
+}
+
+.shooting-star::after {
+    content: '';
+    position: absolute;
+    left: 1.2rem;
+    right: 0.4rem;
+    top: -0.3rem;
+    height: 0.75rem;
+    background: linear-gradient(90deg, rgba(120, 180, 255, 0), rgba(170, 215, 255, 0.18), rgba(255, 255, 255, 0.32));
+    filter: blur(0.3rem);
+    border-radius: 999px;
 }
 
 .shooting-star:nth-child(1) {
@@ -128,13 +140,44 @@ body {
     position: absolute;
     width: 28rem;
     height: 10rem;
-    border-radius: 999px;
+    border-radius: 8rem;
     background:
-        radial-gradient(circle at 30% 45%, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.12) 55%, transparent 68%),
-        radial-gradient(circle at 56% 42%, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.1) 58%, transparent 72%),
-        radial-gradient(circle at 72% 55%, rgba(255, 255, 255, 0.64), rgba(255, 255, 255, 0.08) 52%, transparent 70%);
-    filter: blur(0.25rem);
-    opacity: 0.55;
+        radial-gradient(ellipse at 14% 64%, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.06) 30%, transparent 58%),
+        radial-gradient(ellipse at 28% 44%, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.18) 34%, transparent 57%),
+        radial-gradient(ellipse at 48% 34%, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.22) 30%, transparent 54%),
+        radial-gradient(ellipse at 66% 46%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.16) 31%, transparent 55%),
+        radial-gradient(ellipse at 84% 58%, rgba(255, 255, 255, 0.56) 0%, rgba(255, 255, 255, 0.12) 26%, transparent 49%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 52%, rgba(0, 0, 0, 0.04) 100%);
+    filter: blur(0.32rem);
+    opacity: 0.5;
+}
+
+.scene-cloud::before,
+.scene-cloud::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.scene-cloud::before {
+    inset: 8% 10% 18% 8%;
+    background:
+        radial-gradient(ellipse at 24% 62%, rgba(255, 255, 255, 0.1), transparent 54%),
+        radial-gradient(ellipse at 42% 28%, rgba(255, 255, 255, 0.3), transparent 44%),
+        radial-gradient(ellipse at 74% 42%, rgba(255, 255, 255, 0.16), transparent 40%);
+    filter: blur(0.4rem);
+    opacity: 0.85;
+}
+
+.scene-cloud::after {
+    inset: 34% 4% 8% 14%;
+    background:
+        radial-gradient(ellipse at 18% 42%, rgba(0, 0, 0, 0.12), transparent 42%),
+        radial-gradient(ellipse at 54% 54%, rgba(0, 0, 0, 0.08), transparent 38%),
+        radial-gradient(ellipse at 82% 48%, rgba(255, 255, 255, 0.08), transparent 34%);
+    filter: blur(0.55rem);
+    opacity: 0.75;
 }
 
 .cloud-a {
@@ -545,10 +588,13 @@ body {
 
 #clock.scene-rain .scene-cloud {
     background:
-        radial-gradient(circle at 30% 45%, rgba(89, 101, 118, 0.86), rgba(47, 56, 69, 0.35) 55%, transparent 68%),
-        radial-gradient(circle at 56% 42%, rgba(94, 104, 121, 0.82), rgba(43, 51, 61, 0.28) 58%, transparent 72%),
-        radial-gradient(circle at 72% 55%, rgba(79, 90, 108, 0.9), rgba(43, 51, 61, 0.22) 52%, transparent 70%);
-    filter: blur(0.38rem);
+        radial-gradient(ellipse at 20% 60%, rgba(97, 108, 126, 0.34) 0%, rgba(47, 56, 69, 0.14) 28%, transparent 54%),
+        radial-gradient(ellipse at 30% 44%, rgba(100, 111, 130, 0.92) 0%, rgba(47, 56, 69, 0.42) 34%, transparent 57%),
+        radial-gradient(ellipse at 50% 32%, rgba(104, 114, 132, 0.96) 0%, rgba(43, 51, 61, 0.46) 30%, transparent 54%),
+        radial-gradient(ellipse at 70% 46%, rgba(90, 100, 118, 0.94) 0%, rgba(38, 46, 56, 0.42) 31%, transparent 55%),
+        radial-gradient(ellipse at 86% 58%, rgba(74, 84, 102, 0.9) 0%, rgba(35, 42, 51, 0.34) 26%, transparent 49%),
+        linear-gradient(180deg, rgba(118, 128, 146, 0.16), rgba(40, 46, 56, 0.08) 52%, rgba(10, 14, 20, 0.16) 100%);
+    filter: blur(0.42rem);
 }
 
 #clock.scene-rain #rain-layer,
@@ -583,11 +629,11 @@ body {
     }
     96% {
         opacity: 1;
-        transform: rotate(-26deg) translate3d(-22rem, 14rem, 0);
+        transform: rotate(-26deg) translate3d(22rem, 14rem, 0);
     }
     100% {
         opacity: 0;
-        transform: rotate(-26deg) translate3d(-28rem, 18rem, 0);
+        transform: rotate(-26deg) translate3d(28rem, 18rem, 0);
     }
 }
 
