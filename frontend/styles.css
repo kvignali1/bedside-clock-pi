@@ -4,21 +4,17 @@ html {
 
 body {
     margin: 0;
-    display: flex;
     min-height: 100vh;
     font-family: Arial, sans-serif;
     overflow: hidden;
-}
-
-#clock,
-#calendar {
-    min-height: 100vh;
-    display: flex;
-    box-sizing: border-box;
+    background-color: #000000;
 }
 
 #clock {
-    width: 75%;
+    min-height: 100vh;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
     background-color: #000000;
     color: white;
     position: relative;
@@ -233,37 +229,6 @@ body {
     text-transform: uppercase;
 }
 
-#calendar {
-    width: 25%;
-    background-color: rgb(99, 99, 99);
-    color: black;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 2.5rem 1.5rem 6rem;
-    gap: 1.5rem;
-    text-align: center;
-}
-
-#events-title {
-    font-size: 1.3rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    border-bottom: 0.12rem solid rgba(0, 0, 0, 0.2);
-    padding-bottom: 0.8rem;
-    width: 100%;
-}
-
-#event {
-    font-size: 1.5rem;
-    line-height: 1.4;
-    margin-top: 0;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    width: 100%;
-}
-
 #update-button {
     position: fixed;
     left: 1rem;
@@ -322,23 +287,8 @@ body {
 }
 
 @media (max-width: 900px) {
-    body {
-        flex-direction: column;
-    }
-
-    #clock,
-    #calendar {
-        width: 100%;
-        min-height: auto;
-    }
-
     #clock {
-        min-height: 72vh;
-    }
-
-    #calendar {
-        min-height: 28vh;
-        padding: 1.5rem 1rem 5.5rem;
+        min-height: 100vh;
     }
 
     #clock-main {
@@ -399,9 +349,5 @@ body {
 
     #date {
         font-size: 1.5rem;
-    }
-
-    #event {
-        font-size: 1.1rem;
     }
 }
