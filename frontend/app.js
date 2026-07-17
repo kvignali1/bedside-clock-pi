@@ -1,8 +1,5 @@
 const API_URL = '/api';
 const DEGREE_SYMBOL = '\u00B0';
-const PRECIPITATION_ICON = '\u{1F4A7}';
-const CLOUD_ICON = '\u2601\uFE0F';
-const HUMIDITY_ICON = '\u{1F4A8}';
 
 /* 7-segment display mapping: which segments to light for each digit */
 const SEGMENT_MAP = {
@@ -59,9 +56,9 @@ function updateDisplay() {
             renderSegmentDigit('digit-6', s[1]);
 
             document.getElementById('tempurature').textContent = `${data.temperature}${DEGREE_SYMBOL}F`;
-            document.getElementById('precipitation').textContent = `${PRECIPITATION_ICON} ${data.precipitation}%`;
-            document.getElementById('cloud-coverage').textContent = `${CLOUD_ICON} ${data.cloud_coverage}%`;
-            document.getElementById('humidity').textContent = `${HUMIDITY_ICON} ${data.humidity}%`;
+            document.getElementById('precipitation').textContent = `${data.precipitation}%`;
+            document.getElementById('cloud-coverage').textContent = `${data.cloud_coverage}%`;
+            document.getElementById('humidity').textContent = `${data.humidity}%`;
             document.getElementById('season').textContent = data.season;
             document.getElementById('date').textContent = data.date;
 
